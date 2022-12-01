@@ -6,10 +6,11 @@
 #define CPP_QT_WFH_PROGRESS_WIDGET_H
 #include <QWidget>
 #include <QProgressBar>
-#include <QThreadPool>
 #include <QPushButton>
-#include <QSemaphore>
+#include <QThread>
 #include "../runner/my_runnable.h"
+#include "../ThreadPool.h"
+#include "../worker/worker.h"
 
 class ProgressWidget: public QWidget{
     Q_OBJECT
@@ -20,12 +21,13 @@ private slots:
 private slots:
     void onReceiveValue(bool is_exist);
 private:
+    unsigned int countLineNum(const char* filename);
     std::vector<std::string> splitString(const std::string& str);
 private:
     QProgressBar *m_progress_bar;
     QPushButton *m_button;
     QString *filename;
-    QThreadPool *pool;
+    int progress_num;
 };
 
 
