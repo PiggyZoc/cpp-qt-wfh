@@ -7,18 +7,21 @@
 
 
 #include <QObject>
+#include "../utilities.h"
 
 class Worker: public QObject {
     Q_OBJECT
 public:
     Worker(QString *path);
+    ~Worker();
 public slots:
     void doWork();
 private:
-    std::vector<std::string> splitString(const std::string& str);
     bool pathCheck(const std::string& path);
 signals:
     void onOnePathCheckFinish(bool);
+signals:
+    void workFinished();
 private:
     QString *buffer;
 };

@@ -24,22 +24,9 @@ void Worker::doWork() {
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
     std::cout << "elapsed time: "<< elapsed_seconds.count() << "s" << std::endl;
-
+    emit workFinished();
 }
 
-std::vector<std::string> Worker::splitString(const std::string &str) {
-    std::vector<std::string> tokens;
-
-    std::string::size_type pos = 0;
-    std::string::size_type prev = 0;
-    while ((pos = str.find('\n', prev)) != std::string::npos) {
-        tokens.push_back(str.substr(prev, pos - prev));
-        prev = pos + 1;
-    }
-    tokens.push_back(str.substr(prev));
-
-    return tokens;
-}
 
 bool Worker::pathCheck(const std::string &path) {
     FILE *file;
@@ -53,6 +40,10 @@ bool Worker::pathCheck(const std::string &path) {
         //qDebug("Path %s Invalid",path.c_str());
     }
     return is_exist;
+}
+
+Worker::~Worker() {
+    qDebug("I am gone!");
 }
 
 

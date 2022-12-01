@@ -78,18 +78,13 @@ void ProgressWidget::handleLargeFile() {
         worker->moveToThread(m_thread);
         connect(worker, SIGNAL(onOnePathCheckFinish(bool)), this, SLOT(onReceiveValue(bool)));
         connect(m_thread, SIGNAL(started()), worker, SLOT(doWork()));
+        connect(worker, SIGNAL(workFinished()), m_thread, SLOT(quit()));
 
+        // automatically delete thread and task object when work is done:
+        connect(worker, SIGNAL(workFinished()), worker, SLOT(deleteLater()));
+        connect(m_thread, SIGNAL(finished()), m_thread, SLOT(deleteLater()));
         m_thread->start();
-        //        std::vector<std::string> tokens = splitString(buffer);
-//        for (auto const &token: tokens) {
-//            const char *cstr = token.c_str();
-//            QString *filepath = new QString(cstr);
-//            MyRunnable *task = new MyRunnable(filepath);
-//            Worker *worker = new Worker(filepath);
-//            connect(worker, &Worker::onCheckFinish,  this, &ProgressWidget::onReceiveValue,Qt::BlockingQueuedConnection);
-//            this->pool->enqueue(path_check,worker);
-//            //std::this_thread::sleep_for(std::chrono::seconds(8));
-//        }
+
         offsets[j][0] = seek;
         offsets[j][1] = idx;
         seek = seek + idx;
@@ -109,12 +104,6 @@ void ProgressWidget::handleLargeFile() {
 void ProgressWidget::onReceiveValue(bool is_exist) {
     progress_num ++;
     m_progress_bar->setValue(progress_num);
-  //  qDebug("Received!");
-//    if (is_exist) {
-//        qDebug("Exist!");
-//    } else {
-//        qDebug("Error");
-//    }
 }
 
 unsigned int ProgressWidget::countLineNum(const char *filename) {
@@ -135,8 +124,6 @@ unsigned int ProgressWidget::countLineNum(const char *filename) {
     fseek(fp,0,SEEK_SET);
     int seek = 0;
     int j = 0;
-//    std::ofstream out;
-//    out.open("out.log",std::ios::app);
     while (true) {
         if (seek+SIZE >= file_size) {
             SIZE = file_size - seek;
@@ -153,15 +140,8 @@ unsigned int ProgressWidget::countLineNum(const char *filename) {
             idx++;
         }
         buffer[idx-1] = '\0';
-        //process(buffer);
         std::vector<std::string> tokens = splitString(buffer);
         num = num + tokens.size();
-//        for (auto const &token: tokens) {
-//
-//            const char *cstr = token.c_str();
-//            //out << (char *)cstr << '\n';
-//            results.emplace_back(pool.enqueue(path_exist,(char *)cstr));
-//        }
         offsets[j][0] = seek;
         offsets[j][1] = idx;
         seek = seek + idx;
@@ -172,18 +152,4 @@ unsigned int ProgressWidget::countLineNum(const char *filename) {
         }
     }
     return num;
-}
-
-std::vector<std::string> ProgressWidget::splitString(const std::string &str) {
-    std::vector<std::string> tokens;
-
-    std::string::size_type pos = 0;
-    std::string::size_type prev = 0;
-    while ((pos = str.find('\n', prev)) != std::string::npos) {
-        tokens.push_back(str.substr(prev, pos - prev));
-        prev = pos + 1;
-    }
-    tokens.push_back(str.substr(prev));
-
-    return tokens;
 }

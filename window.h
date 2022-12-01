@@ -23,6 +23,7 @@ private slots:
     void slotButtonClicked(bool checked);
 private:
     int m_counter;
+    QPushButton *l_button;
     QPushButton *m_button;
     ProgressWidget *m_progress_widget;
 };

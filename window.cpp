@@ -5,13 +5,21 @@
 #include "window.h"
 #include <QPushButton>
 #include <QApplication>
+#include <QVBoxLayout>
 
 Window::Window(QWidget *parent) :
  QWidget(parent) {
     setFixedSize(800,600);
-    m_button = new QPushButton("DOG",this);
+    QVBoxLayout *qvBoxLayout = new QVBoxLayout();
+    l_button = new QPushButton("lint check",this);
+    l_button->setGeometry(10,10,80,30);
+    l_button->setCheckable(true);
+    m_button = new QPushButton("async.list",this);
     m_button->setGeometry(10,10,80,30);
     m_button->setCheckable(true);
+    qvBoxLayout->addWidget(l_button);
+    qvBoxLayout->addWidget(m_button);
+    this->setLayout(qvBoxLayout);
     m_counter = 0;
     connect(m_button, SIGNAL(clicked(bool)), this, SLOT(slotButtonClicked(bool)));
     connect(this, SIGNAL (counterReached()), QApplication::instance(), SLOT (quit()));

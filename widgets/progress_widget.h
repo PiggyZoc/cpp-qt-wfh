@@ -8,9 +8,9 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QThread>
-#include "../runner/my_runnable.h"
 #include "../ThreadPool.h"
 #include "../worker/worker.h"
+#include "../utilities.h"
 
 class ProgressWidget: public QWidget{
     Q_OBJECT
@@ -22,7 +22,6 @@ private slots:
     void onReceiveValue(bool is_exist);
 private:
     unsigned int countLineNum(const char* filename);
-    std::vector<std::string> splitString(const std::string& str);
 private:
     QProgressBar *m_progress_bar;
     QPushButton *m_button;
